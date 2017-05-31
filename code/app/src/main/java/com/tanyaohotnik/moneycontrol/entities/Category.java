@@ -1,15 +1,42 @@
 package com.tanyaohotnik.moneycontrol.entities;
 
-import java.io.File;
+
+import com.orm.SugarRecord;
+import com.orm.dsl.Unique;
 
 /**
  * Created by Tanya Ohotnik on 26.03.2017.
  */
 
-public class Category {
+public class Category extends SugarRecord {
+  
     private String name;
-    private File icon;
-    private OperationType operation;
+    private int iconId;
+    private int operationType;
+
+    public Category() {
+    }
+
+    /**
+     * @param name
+     * @param iconId
+     * @param operation
+     */
+    public Category(String name, int iconId, OperationType operation) {
+        this.name = name;
+        this.iconId = iconId;
+        this.operationType = operation==OperationType.COST?1:2;
+    }
+
+
+
+    public long getCategoryId() {
+        return this.getId().longValue();
+    }
+
+//    public void setCategoryId(long id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;
@@ -19,19 +46,19 @@ public class Category {
         this.name = name;
     }
 
-    public File getIcon() {
-        return icon;
+    public int getIconId() {
+        return iconId;
     }
 
-    public void setIcon(File icon) {
-        this.icon = icon;
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
     }
 
-    public OperationType getOperation() {
-        return operation;
+    public OperationType getOperationType() {
+        return operationType ==1?OperationType.COST:OperationType.INCOME;
     }
 
-    public void setOperation(OperationType operation) {
-        this.operation = operation;
+    public void setOperationType(OperationType operation) {
+        this.operationType = operation==OperationType.COST?1:2;
     }
 }

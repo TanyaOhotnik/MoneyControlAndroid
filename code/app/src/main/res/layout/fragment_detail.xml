@@ -16,7 +16,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/detailContentLayout"
+        >
 
         <LinearLayout
             android:orientation="horizontal"
@@ -28,18 +30,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/textView"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:gravity="center"
                 android:textStyle="normal|bold"
-                android:textAllCaps="true"
-                android:textSize="16sp"/>
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textAlignment="textStart"
+                android:paddingLeft="16dp"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_launcher"
                 android:id="@+id/detailPhotoImageView"
-                android:layout_weight="1"/>
+                android:layout_weight="0.5"/>
 
         </LinearLayout>
         <LinearLayout
@@ -53,20 +57,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/textView2"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:gravity="center"
                 android:textStyle="normal|bold"
-                android:textAllCaps="true"
-                android:textSize="16sp"/>
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textAlignment="textStart"
+                android:paddingLeft="16dp"/>
 
             <TextView
                 android:text="@string/zeroCostString"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:textStyle="normal|bold"
-                android:textAllCaps="true"
-                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textAlignment="textStart"
                 android:id="@+id/detailSumTextView"
                 android:gravity="center"/>
 
@@ -84,25 +90,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/textView3"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:gravity="center"
                 android:textStyle="normal|bold"
-                android:textAllCaps="true"
-                android:textSize="16sp"/>
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textAlignment="textStart"
+                android:paddingLeft="16dp"/>
 
             <TextView
                 android:text="Date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:textStyle="normal|bold"
-                android:textAllCaps="true"
-                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textAlignment="textStart"
                 android:id="@+id/detailDateTextView"
                 android:gravity="center"/>
 
 
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -114,18 +123,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/textView4"
-                android:layout_weight="0"
+                android:layout_weight="0.4"
                 android:gravity="center"
                 android:textStyle="normal|bold"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textSize="16sp"
-                />
+                android:textAlignment="textStart"
+                android:paddingLeft="16dp"/>
 
             <TextView
-                android:text="тут должно быть многа букав или невидимое отображение"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.6"
                 android:textStyle="normal|bold"
                 android:textAllCaps="false"
                 android:textAlignment="center"
@@ -135,6 +144,22 @@
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/detailButtonLayout"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:text="@string/deleteString"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/deleteCashTransactionButton"
+            android:layout_weight="0"
+            />
     </LinearLayout>
 
 </RelativeLayout>

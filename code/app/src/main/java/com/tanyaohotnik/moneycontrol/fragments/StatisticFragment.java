@@ -1,52 +1,67 @@
 package com.tanyaohotnik.moneycontrol.fragments;
 
 
-
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.view.Display;
-import android.view.Gravity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanyaohotnik.moneycontrol.R;
+import com.tanyaohotnik.moneycontrol.dao.CashTransactionDAO;
+import com.tanyaohotnik.moneycontrol.dao.CategoryDAO;
 import com.tanyaohotnik.moneycontrol.entities.CashTransaction;
-import com.tanyaohotnik.moneycontrol.entities.DateFormat;
-import com.tanyaohotnik.moneycontrol.entities.CashTransactionList;
+import com.tanyaohotnik.moneycontrol.entities.Category;
+import com.tanyaohotnik.moneycontrol.entities.OperationType;
+import com.tanyaohotnik.moneycontrol.entities.StatisticObject;
+import com.tanyaohotnik.moneycontrol.helpers.DateFormat;
 
-import java.util.Date;
 import java.util.List;
 
-public class StatisticFragment extends Fragment{
-    private LinearLayout table;
+public class StatisticFragment extends Fragment {
     private TextView mDateTextView;
+    private RecyclerView mStatisticRecyclerView;
+    private StatisticAdapter mAdapter;
+    private CashTransactionDAO mCashTransactionDAO;
+    private TextView mMonthBalanceAmountTextView;
+    private TextView mCommonBalanceAmountTextView;
+    private int month;
+    private int year;
+    public static Fragment newInstance(long id){
+        StatisticFragment fragment = new StatisticFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCashTransactionDAO = new CashTransactionDAO(getActivity());
     }
 
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_statistic,container,false);
-        Button mNextDateButton = (Button)view.findViewById(R.id.nextDateButton);
-        Button mPrevDateButton = (Button)view.findViewById(R.id.prevDateButton);
-        mDateTextView = (TextView)view.findViewById(R.id.monthYearStatisticTextView);
+        View view = inflater.inflate(R.layout.fragment_statistic, container, false);
+        Button mNextDateButton = (Button) view.findViewById(R.id.nextDateButton);
+        Button mPrevDateButton = (Button) view.findViewById(R.id.prevDateButton);
+        mDateTextView = (TextView) view.findViewById(R.id.monthYearStatisticTextView);
         mDateTextView.setText(DateFormat.getRussianMonthYear());
-        table = (LinearLayout)view.findViewById(R.id.categoriesTableLayout);
-        addButtonListeners(mNextDateButton,mPrevDateButton);
-        fillCostTable();
+        month = DateFormat.getMonth();
+        year = DateFormat.getYear();
+        addButtonListeners(mNextDateButton, mPrevDateButton);
+        mMonthBalanceAmountTextView = (TextView) view.findViewById(R.id.monthBalanceAmountTextView);
+        mCommonBalanceAmountTextView = (TextView) view.findViewById(R.id.commonBalanceAmountTextView);
+        mStatisticRecyclerView = (RecyclerView) view.findViewById(R.id.statisticRecyclerView);
+        mStatisticRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateUI();
         return view;
     }
+
     private void addButtonListeners(Button next, Button prev) {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,80 +77,99 @@ public class StatisticFragment extends Fragment{
             }
         });
     }
-    public void showDatePickerDialog(View v) {
-//        DialogFragment newFragment = new DateFragment();
-//        newFragment.show(getSupportFragmentManager(), "datePicker");
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
     }
 
-    /**
-     * make connection to db
-     */
-    public void connectToDatabase() {
 
-    }
-
-    /**
-     * fill table with costs & incomes
-     * make decision: use relative or linear layout
-     */
-    public void fillCostTable() {
-
-        List<CashTransaction> records = (new CashTransactionList()).getRecords();
-        int width = getScreenWidth();
-        TextView date;
-        TextView amount;
-        ImageView icon;
-        LinearLayout relativeLayout;
-//        for(CashTransaction i: records){
-        for (int i = 0; i < 10; i++) {
-
-            date = new TextView(getActivity());
-            amount = new TextView(getActivity());
-            date.setTextSize(18);
-            amount.setTextSize(18);
-//            date.setHeight(120);
-//            amount.setHeight(120);
-            date.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorText));
-            amount.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorText));
-            relativeLayout = new LinearLayout(getActivity());
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            date.setLayoutParams(params);
-            amount.setLayoutParams(params);
-//            icon = new ImageView();
-            date.setText(DateFormat.getNumberDateFormat(new Date()));
-
-//            date.setText((new Date()).toString());
-            amount.setText((new Integer(200)).toString() + " грн.");
-            amount.setGravity(Gravity.RIGHT);
-//            date.getLayoutParams().width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-//            amount.getLayoutParams().width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-            date.setWidth(width / 2);
-
-            amount.setWidth(width / 2);
-//        }
-            relativeLayout.setMinimumHeight(120);
-            relativeLayout.setGravity(Gravity.CENTER_VERTICAL);
-
-            relativeLayout.addView(date);
-            relativeLayout.addView(amount);
-            table.addView(relativeLayout);
-            View v = new View(getActivity());
-            v.setLayoutParams(new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    2
-            ));
-
-            v.setBackgroundColor(Color.parseColor("#B3B3B3"));
-            table.addView(v);
+    private void updateUI() {
+      List<StatisticObject> list = mCashTransactionDAO.getAmountByCategoriesMonthAndYear(month,year);
+        mCommonBalanceAmountTextView.setText(mCashTransactionDAO.getCommonAmountByMonthAndYear(month,year)+" грн.");
+        mMonthBalanceAmountTextView.setText(mCashTransactionDAO.getCommonAmountByMonthAndYear(month,year)+" грн.");
+        if(list==null) return;
+        if (mAdapter == null) {
+            mAdapter = new StatisticAdapter(list);
+            mStatisticRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.swap(list);
         }
 
-
     }
 
-    private int getScreenWidth() {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.x;
+
+
+    /**
+     * ViewHolder Class
+     */
+    private class StatisticHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public ImageView mIconImageView;
+        public TextView mAmountTextView;
+        public TextView mDateTextView;
+//        private StatisticObject mStatisticObject;
+
+        public StatisticHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mDateTextView = (TextView) itemView.findViewById(R.id.cashTransactionDateTextView);
+            mAmountTextView = (TextView) itemView.findViewById(R.id.cashTransactionAmountTextView);
+            mIconImageView = (ImageView) itemView.findViewById(R.id.cashTransactionIconImageView);
+        }
+
+        public void bindStatistic(StatisticObject statisticObject) {
+
+
+            Category category = (new CategoryDAO(getActivity())).get(statisticObject.getCategoryId());
+            mIconImageView.setImageResource(category.getIconId());
+            mAmountTextView.setText(Integer.toString(statisticObject.getAmount()) + " грн.");
+            mDateTextView.setText(category.getName());
+            if(category.getOperationType()== OperationType.COST)
+                mAmountTextView.setTextColor(getResources().getColor(R.color.colorRed));
+            else
+                mAmountTextView.setTextColor(getResources().getColor(R.color.colorGreen));
+        }
+
+        @Override
+        public void onClick(View view) {
+//            Intent intent = DetailActivity.getIntent(getActivity(), mCashTransaction.getTransactionId());
+//            startActivity(intent);
+
+        }
     }
+
+    /**
+     * Adapter Class
+     */
+    private class StatisticAdapter extends RecyclerView.Adapter<StatisticHolder> {
+        private List<StatisticObject> mStatisticObjectList;
+
+        public StatisticAdapter(List<StatisticObject> list) {
+            mStatisticObjectList = list;
+        }
+
+        @Override
+        public StatisticHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.list_item_transaction, parent, false);
+            return new StatisticHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(StatisticHolder holder, int position) {
+            StatisticObject statisticObject = mStatisticObjectList.get(position);
+            holder.bindStatistic(statisticObject);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mStatisticObjectList.size();
+        }
+        public void swap(List<StatisticObject> list){
+            mStatisticObjectList = list;
+            notifyDataSetChanged();
+        }
+    }
+
 }

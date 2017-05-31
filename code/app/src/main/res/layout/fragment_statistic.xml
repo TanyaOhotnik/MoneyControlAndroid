@@ -10,13 +10,7 @@
                 android:scrollbarAlwaysDrawHorizontalTrack="true"
     >
 
-    <!--<FrameLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:minHeight="40dp"-->
-        <!--android:id="@+id/fragmentDateContainer">-->
-    <!--</FrameLayout>-->
+
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="40dp"
                   android:background="@color/colorBackground"
@@ -30,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0"
             android:background="@color/colorBackground"
-            android:drawableLeft="@mipmap/back"
+            android:drawableLeft="@mipmap/prev"
             android:paddingLeft="10dp"
             style="@style/Widget.AppCompat.Button.Borderless"
             />
@@ -106,14 +100,15 @@
             android:id="@+id/monthBalanceAmountTextView"
             android:layout_weight="1"
             android:textStyle="normal|bold"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textAlignment="center"
-            android:textSize="16sp"/>
+            android:textSize="18sp"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
+        android:id="@+id/summaryLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -139,29 +134,60 @@
             android:id="@+id/commonBalanceAmountTextView"
             android:layout_weight="1"
             android:textStyle="normal|bold"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textAlignment="center"
-            android:textSize="16sp"/>
+            android:textSize="18sp"/>
 
     </LinearLayout>
 
-    <ScrollView
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginTop="150dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_marginBottom="10dp">-->
+
+        <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/categoriesTableLayout"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingRight="20dp">-->
+
+        <!--</LinearLayout>-->
+    <!--</ScrollView>-->
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp">
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:id="@+id/statisticRecyclerView"
+        android:elevation="1dp"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:padding="16dp"
+        android:layout_below="@+id/summaryLayout">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/categoriesTableLayout"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+    </android.support.v7.widget.RecyclerView>
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_below="@+id/costIncomeLayout"-->
+        <!--android:layout_alignParentLeft="false"-->
+        <!--android:layout_alignParentStart="false"-->
+        <!--android:clipChildren="false"-->
+        <!--android:clipToPadding="false"-->
+        <!--android:id="@+id/cashTransactionRecyclerView"-->
+        <!--android:elevation="1dp"-->
+        <!--android:layout_alignParentBottom="false"-->
+        <!--android:layout_alignParentTop="false"-->
+        <!--android:layout_above="@+id/buttonLayout"-->
+        <!--android:padding="16dp"-->
+        <!--android:layout_marginBottom="16dp">-->
 
-        </LinearLayout>
-    </ScrollView>
-
+    <!--</android.support.v7.widget.RecyclerView>-->
 </RelativeLayout>

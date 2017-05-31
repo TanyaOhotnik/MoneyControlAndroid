@@ -1,32 +1,26 @@
 package com.tanyaohotnik.moneycontrol.activities;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 
 import com.tanyaohotnik.moneycontrol.R;
+import com.tanyaohotnik.moneycontrol.fragments.AddCostFragment;
 
-public class AddCostActivity extends AppCompatActivity {
+public class AddCostActivity extends PutFragmentPattern {
     private static String EXTRA_CODE_ADD_COST = "com.tanyaohotnik.moneycontrol.cost";
     private static String EXTRA_CODE_ADD_INCOME = "com.tanyaohotnik.moneycontrol.income";
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_cost);
+    protected Fragment getFragment() {
+        return AddCostFragment.newInstance();
     }
 
-
-    public void onAddClick(View view) {
-        Intent intent = getIntent();
-        boolean cost = intent.getBooleanExtra(EXTRA_CODE_ADD_COST,false);
-        boolean income = intent.getBooleanExtra(EXTRA_CODE_ADD_INCOME,false);
-        if(cost){
-
-        }else
-        if(income){
-
-        }
-
+    public static Intent getIntent(Context context){
+        Intent intent = new Intent(context,DetailActivity.class);
+        return intent;
     }
+
 }

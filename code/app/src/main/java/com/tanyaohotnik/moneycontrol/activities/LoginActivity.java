@@ -3,9 +3,15 @@ package com.tanyaohotnik.moneycontrol.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -19,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,9 +35,23 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.tanyaohotnik.moneycontrol.R;
+import com.tanyaohotnik.moneycontrol.dao.UserDAO;
+import com.tanyaohotnik.moneycontrol.entities.User;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+    private static final int REQUEST_SIGN_IN = 0;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -63,11 +85,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private GoogleApiClient mGoogleApiClient;
+    private SharedPreferences prefs;
+    private File mPhotoFile;
+//    private TextView mStatusTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        prefs = getSharedPreferences("com.tanyaohotnik.moneycontrol", MODE_PRIVATE);
+        if (prefs.getBoolean("isLogged", false)) {
+            Log.d("Sign in flag in start", Boolean.toString(prefs.getBoolean("isLogged", false)));
+            startActivity(new Intent(this, MainTabbedActivity.class));
+        }
         setContentView(R.layout.activity_login);
+//        prefs.edit().putBoolean("isLogged",false).apply();
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -84,16 +118,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mSignInButton = (Button) findViewById(R.id.googleSignInButton);
+        mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+//                attemptLogin();
+                signIn();
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+//        mStatusTextView = (TextView)findViewById(R.id.statusTextView);
+    }
+
+    public void onSignInButtonClick(View view) {
+//        attemptLogin();
+
+        if (mEmailView.getText().toString().equals("dev@gmail.com") && mPasswordView.getText().toString().equals("dev")) {
+            prefs.edit().putBoolean("isLogged", true).apply();
+            Log.d("SignClick", Boolean.toString(prefs.getBoolean("isLogged", false)));
+            startActivity(new Intent(this, MainTabbedActivity.class));
+        } else {
+            prefs.edit().putBoolean("isLogged", false).apply();
+            Toast.makeText(this, R.string.loginFailed, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, REQUEST_SIGN_IN);
     }
 
     private void populateAutoComplete() {
@@ -103,6 +170,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         getLoaderManager().initLoader(0, null, this);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) return;
+        if (requestCode == REQUEST_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+//        Log.d(TAG, "handleSignInResultgnInResult:" + result.isSuccess());
+
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            prefs.edit().putBoolean("isLogged", true).apply();
+            GoogleSignInAccount acct = result.getSignInAccount();
+            String personName = acct.getDisplayName();
+//            String personGivenName = acct.getGivenName();
+//            String personFamilyName = acct.getFamilyName();
+
+            String personEmail = acct.getEmail();
+            Uri personPhoto = acct.getPhotoUrl();
+            User user = new User();
+            user.setName(personName);
+            user.setEmail(personEmail);
+            prefs.edit().putString("userEmail", personEmail).apply();
+//            mPhotoFile = (new UserDAO(this)).getPhotoFile(user);
+//            Log.d("photofile",mPhotoFile.getPath());
+//            if (mPhotoFile != null) {
+//               mPhotoFile = new File(personPhoto.getPath());
+//            }
+            (new UserDAO(this)).add(user);
+            Toast.makeText(this,"Авторизация успешна",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainTabbedActivity.class);
+            startActivity(intent);
+        } else {
+            // Signed out, show unauthenticated UI.
+
+        }
+    }
+
 
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -189,7 +299,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+
         }
+
     }
 
     private boolean isEmailValid(String email) {

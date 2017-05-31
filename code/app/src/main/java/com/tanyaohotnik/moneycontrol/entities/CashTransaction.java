@@ -1,58 +1,61 @@
 package com.tanyaohotnik.moneycontrol.entities;
 
-import java.io.File;
+import com.orm.SugarRecord;
+import com.orm.dsl.Unique;
+import com.tanyaohotnik.moneycontrol.helpers.DateFormat;
+
 import java.util.Date;
 
 /**
  * Created by Tanya Ohotnik on 26.03.2017.
  */
-
-public class CashTransaction {
-
-
-    private long id;
-    private long user_id;
-    private Date date;
-    private long category_id;
+//without user id, because it will add after back up
+public class CashTransaction extends SugarRecord{
+    @Unique
+    private String composedTransactionId;
+    private Date dateValue;
+    private long categoryId;
     private int amount;
-    private File photo;
     private String description;
+    private long operationType;
 
-    public CashTransaction(long id, Date date, int amount) {
-        this.id = id;
-        this.date = date;
-        this.amount = amount;
-    }
-    public long getId() {
-        return id;
+    public CashTransaction() {
     }
 
-    public void setId(long id) {
-        this.id = id;
+
+
+    public String getPhotoFilename(){
+        return "IMG_" +  String.valueOf(getTransactionId());
     }
 
-    public long getUser_id() {
-        return user_id;
+//    public long getTransactionId() {
+//        return this.getId().longValue();
+//    }
+ public long getTransactionId() {
+        return this.getId().longValue();
+//     return 2;
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
+//    public void setTransactionId(long id) {
+//        this.id = id;
+//    }
+
 
     public Date getDate() {
-        return date;
+        return dateValue;
+//        return DateFormat.makeDateFromString(dateValue);
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.dateValue = date;
     }
 
-    public long getCategory_id() {
-        return category_id;
+    public long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory_id(long category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(long category_id) {
+        this.categoryId = category_id;
     }
 
     public int getAmount() {
@@ -63,19 +66,27 @@ public class CashTransaction {
         this.amount = amount;
     }
 
-    public File getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(File photo) {
-        this.photo = photo;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public OperationType getOperationType() {
+        return operationType ==1?OperationType.COST:OperationType.INCOME;
+    }
+
+    public void setOperationType(OperationType operationType) {
+        this.operationType = operationType ==OperationType.COST?1:2;
+    }
+
+    public String getComposedTransactionId() {
+        return composedTransactionId;
+    }
+
+    public void setComposedTransactionId(String composedTransactionId) {
+        this.composedTransactionId = composedTransactionId;
     }
 }

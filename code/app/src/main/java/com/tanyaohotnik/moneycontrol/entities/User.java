@@ -1,25 +1,31 @@
 package com.tanyaohotnik.moneycontrol.entities;
 
+import com.orm.SugarRecord;
+import com.orm.dsl.Unique;
+
 import java.io.File;
 
 /**
  * Created by Tanya Ohotnik on 26.03.2017.
  */
 
-public class User {
-    private long user_id;
+public class User extends SugarRecord {
+   
     private String password;
     private String name;
     private String email;
     private File photo;
 
-    public long getUser_id() {
-        return user_id;
+    public User() {
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
+    public long getUserId() {
+        return this.getId().longValue();
     }
+
+//    public void setUserId(long user_id) {
+//        this.user_id = user_id;
+//    }
 
     public String getPassword() {
         return password;
@@ -51,5 +57,8 @@ public class User {
 
     public void setPhoto(File photo) {
         this.photo = photo;
+    }
+    public String getPhotoFilename(){
+        return "IMG_" +  "USER";
     }
 }

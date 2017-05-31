@@ -4,15 +4,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.tanyaohotnik.moneycontrol.R;
+//import com.tanyaohotnik.moneycontrol.dao.DBHelper;
 
 /**
  * Created by Tanya Ohotnik on 30.03.2017.
  */
 
-public abstract class  PutFragmentPattern extends FragmentActivity {
-
+public abstract class  PutFragmentPattern extends AppCompatActivity {
 
     protected abstract Fragment getFragment();
     @Override
@@ -25,6 +26,5 @@ public abstract class  PutFragmentPattern extends FragmentActivity {
             fragment = getFragment();
             fm.beginTransaction().add(R.id.fragment_container,fragment).commit();
         }
-
     }
 }

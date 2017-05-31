@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "321981799863",
+    "project_id": "firebase-moneycontrol"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321981799863:android:41d51d9464fc07d0",
+        "android_client_info": {
+          "package_name": "com.tanyaohotnik.moneycontrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "321981799863-lgpn4ouh3lvesplkrskiuadlc0a8hbve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tanyaohotnik.moneycontrol",
+            "certificate_hash": "5d855eae4dc1607b9ee2d1bc99ea0a9a323fe2e8"
+          }
+        },
+        {
+          "client_id": "321981799863-l0hpbnqfg4phpelbo075c802iclusrhn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBYZemIXTjC2vRoYhO3SO73NUEFdHKUZU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

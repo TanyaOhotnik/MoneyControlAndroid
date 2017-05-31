@@ -4,9 +4,9 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_password">Пароль</string>
+    <!--<string name="action_sign_in">Войти с помощою Google</string>-->
+    <!--<string name="action_sign_in_short">Войти</string>-->
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -72,6 +72,16 @@
     <string name="card_back_description"><![CDATA[Lorem ipsum dolor sit]]></string>
     <string name="lorem_ipsum"><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et magna ut erat elementum cursus in quis ipsum. Nam faucibus ultrices eros, vel tempor leo semper sit amet. Duis magna quam, congue vitae interdum nec, condimentum ut lectus. Sed commodo venenatis eros a dignissim. Nunc adipiscing turpis nec magna venenatis at ultricies ipsum bibendum. Sed volutpat urna quis nisi vulputate egestas. Etiam eu dui a enim lacinia dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.\n\nPhasellus orci mi, eleifend nec congue id, volutpat at neque. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer semper velit vel leo rutrum sed fermentum elit porta.]]></string>
     <string name="addText">Добавить</string>
+    <string name="deleteString">Удалить</string>
 
-
+    <string name="addNewCashTransactionString">Добавить</string>
+    <string name="backString">Назад</string>
+    <string name="signed_in_fmt">Successfull</string>
+    <string name="registerString">Eще нет аккаунта? Зарегестрируйтесь!</string>
+    <string name="googleSignIn">Войти с помощью Google</string>
+    <string name="signInShort">Войти</string>
+    <string name="loginFailed">Неверный логин или пароль!</string>
+    <string name="recordWasAdded">Сохранено</string>
+    <string name="helloText">Добро пожаловать! Все инструкции по использованию приложения вы можете найти в меню слева.</string>
+    <string name="exitString">Выйти</string>
 </resources>

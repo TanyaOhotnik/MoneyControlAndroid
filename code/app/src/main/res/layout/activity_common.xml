@@ -5,7 +5,7 @@
     android:id="@+id/activity_common"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tanyaohotnik.moneycontrol.activities.CommonActivity">
+    tools:context="com.tanyaohotnik.moneycontrol.activities.DetailActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
